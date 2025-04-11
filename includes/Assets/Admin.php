@@ -6,133 +6,87 @@ namespace WordPressPluginBoilerplate\Assets;
 
 use WordPressPluginBoilerplate\Core\Template;
 use WordPressPluginBoilerplate\Traits\Base;
-use WordPressPluginBoilerplate\Libs\Assets;
 
-/**
- * Class Admin
- *
- * Handles admin functionalities for the WordPressPluginBoilerplate.
- *
- * @package WordPressPluginBoilerplate\Admin
- */
-class Admin {
+class Admin
+{
+    use Base;
 
-	use Base;
+    const HANDLE = 'context-alt-text-admin';
+    const OBJ_NAME = 'contextAltTextAdmin';
+    const DEV_SCRIPT = 'src/admin/main.tsx';
 
-	/**
-	 * Script handle for WordPressPluginBoilerplate.
-	 */
-	const HANDLE = 'wordpress-plugin-boilerplate';
+    private $allowed_screens = array(
+        'toplevel_page_wordpress-plugin-boilerplate',
+    );
 
-	/**
-	 * JS Object name for WordPressPluginBoilerplate.
-	 */
-	const OBJ_NAME = 'wordpressPluginBoilerplate';
+    public function bootstrap(): void
+    {
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+        add_action('admin_footer', [$this, 'render_admin_mount_point']);
+    }
 
-	/**
-	 * Development script path for WordPressPluginBoilerplate.
-	 */
-	const DEV_SCRIPT = 'src/admin/main.jsx';
+    public function enqueue_admin_assets(): void
+    {
+        $screen = get_current_screen();
+        if (! $screen || ! in_array($screen->base, $this->allowed_screens, true)) {
+            return;
+        }
 
-	/**
-	 * List of allowed screens for script enqueue.
-	 *
-	 * @var array
-	 */
-	private $allowed_screens = array(
-		'toplevel_page_wordpress-plugin-boilerplate',
-	);
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            // DEV mode: load from Vite server
+            wp_enqueue_script(
+                self::HANDLE,
+                'http://localhost:5174/' . self::DEV_SCRIPT,
+                [],
+                time(),
+                true
+            );
+        } else {
+            // PROD mode: load built asset (adjust path to match build)
+            wp_enqueue_script(
+                self::HANDLE,
+                plugin_dir_url(__FILE__) . '../../build/assets/admin.js',
+                [],
+                '1.0.0',
+                true
+            );
+        }
 
-	/**
-	 * Frontend bootstrapper.
-	 *
-	 * @return void
-	 */
-	public function bootstrap() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_script' ) );
-	}
+        wp_localize_script(self::HANDLE, self::OBJ_NAME, $this->get_data());
+    }
 
-	/**
-	 * Enqueue script based on the current screen.
-	 *
-	 * @param string $screen The current screen.
-	 */
-	public function enqueue_script( $screen ) {
-		$current_screen     = $screen;
-		$template_file_name = Template::FRONTEND_TEMPLATE;
+    public function render_admin_mount_point(): void
+    {
+        $screen = get_current_screen();
+        if ($screen && in_array($screen->base, $this->allowed_screens, true)) {
+            echo '<div id="context-alt-text-admin"></div>';
+        }
+    }
 
-		if ( ! is_admin() ) {
-			$template_slug = get_page_template_slug();
-			if ( $template_slug ) {
+    private function get_data(): array
+    {
+        return [
+            'developer' => 'prappo',
+            'isAdmin'   => is_admin(),
+            'apiUrl'    => rest_url(),
+            'userInfo'  => $this->get_user_data(),
+        ];
+    }
 
-				if ( $template_slug === $template_file_name ) {
-					array_push( $this->allowed_screens, $template_file_name );
-					$current_screen = $template_file_name;
-				}
-			}
-		}
+    private function get_user_data(): array
+    {
+        $username   = '';
+        $avatar_url = '';
 
-		if ( in_array( $current_screen, $this->allowed_screens, true ) ) {
-			Assets\enqueue_asset(
-				WORDPRESS_PLUGIN_BOILERPLATE_DIR . '/assets/admin/dist',
-				self::DEV_SCRIPT,
-				$this->get_config()
-			);
-			wp_localize_script( self::HANDLE, self::OBJ_NAME, $this->get_data() );
-		}
-	}
+        if (is_user_logged_in()) {
+            $current_user = wp_get_current_user();
+            $username     = $current_user->user_login;
+            $avatar_url   = get_avatar_url($current_user->ID);
+        }
 
-	/**
-	 * Get the script configuration.
-	 *
-	 * @return array The script configuration.
-	 */
-	public function get_config() {
-		return array(
-			'dependencies' => array( 'react', 'react-dom' ),
-			'handle'       => self::HANDLE,
-			'in-footer'    => true,
-		);
-	}
-
-	/**
-	 * Get data for script localization.
-	 *
-	 * @return array The localized script data.
-	 */
-	public function get_data() {
-
-		return array(
-			'developer' => 'prappo',
-			'isAdmin'   => is_admin(),
-			'apiUrl'    => rest_url(),
-			'userInfo'  => $this->get_user_data(),
-		);
-	}
-
-	/**
-	 * Get user data for script localization.
-	 *
-	 * @return array The user data.
-	 */
-	private function get_user_data() {
-		$username   = '';
-		$avatar_url = '';
-
-		if ( is_user_logged_in() ) {
-			// Get current user's data .
-			$current_user = wp_get_current_user();
-
-			// Get username.
-			$username = $current_user->user_login; // or use user_nicename, display_name, etc.
-
-			// Get avatar URL.
-			$avatar_url = get_avatar_url( $current_user->ID );
-		}
-
-		return array(
-			'username' => $username,
-			'avatar'   => $avatar_url,
-		);
-	}
+        return [
+            'username' => $username,
+            'avatar'   => $avatar_url,
+        ];
+    }
 }
