@@ -1,32 +1,55 @@
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-pnpm-lock.yaml
 lerna-debug.log*
 
-node_modules
-dist
-release
-dist-ssr
-*.local
+# Node
+node_modules/
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
-composer.lock
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Composer
+/vendor/
+composer.lock
+.phpunit.result.cache
+
+# Vite / Build Outputs
+build/
+dist/
+dist-ssr/
+release/
+public/
+assets/build/
+admin/dist/
+
+# OS / temp files
 .DS_Store
+Thumbs.db
+ehthumbs.db
+*.tmp
+*.temp
+*.bak
+*.orig
+*.sw?
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 
-/vendor/
+# Editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Documentation
+documentation/build/
+.storybook-out/
+storybook-static/
+
+# LocalWP/Project specific
+*.local

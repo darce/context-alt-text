@@ -1,7 +1,9 @@
 # WordPress Plugin Boilerplate
+
 #### Create your WordPress plugin in weeks, not months. Rapidly prototype and deliver your plugin with confidence!
 
 #### This boilerplate has built-in marketing site and documentation setup which you can use to showcase your plugin.
+
 ## Preview
 
 <a href='https://prappo.github.io/wordpress-plugin-boilerplate/preview' target="_blank"><img alt='Wordpress' src='https://img.shields.io/badge/Live_Preview-100000?style=for-the-badge&logo=Wordpress&logoColor=white&labelColor=21759B&color=21759B'/></a>
@@ -23,6 +25,7 @@
 </table>
 
 ## Get Started
+
 The plugin consists of two main components: the frontend, built with React, and the backend, which communicates via an API.
 
 To get started, you need to clone the repository and install the dependencies. Then you can rename the plugin and start development. It's that simple!
@@ -30,34 +33,37 @@ To get started, you need to clone the repository and install the dependencies. T
 <img width="100%" src="documentation/public/artworks/plugin-dev-process.svg" />
 
 ## Clone the repository
+
 ```bash
 git clone https://github.com/prappo/wordpress-plugin-boilerplate.git
 ```
 
 ## Install dependencies
+
 ```bash
 npm install
 composer install
 ```
+
 ## Plugin renaming
 
 You can easly rename the plugin by changing data in `plugin-config.json` file.
 
 ```json
 {
-    "plugin_name":"WordPress Plugin Boilerplate",
-    "plugin_description":"A boilerplate for WordPress plugins.",
-    "plugin_version":"1.0.0",
-    "plugin_file_name":"wordpress-plugin-boilerplate.php",
-    "author_name":"Prappo",
-    "author_uri":"https://prappo.github.io",
-    "text_domain":"wordpress-plugin-boilerplate",
-    "domain_path":"/languages",
-    "main_class_name":"WordPressPluginBoilerplate",
-    "main_function_name":"wordpress_plugin_boilerplate_init",
-    "namespace":"WordPressPluginBoilerplate",
-    "plugin_prefix":"wpb",
-    "constant_prefix":"WPB"
+  "plugin_name": "WordPress Plugin Boilerplate",
+  "plugin_description": "A boilerplate for WordPress plugins.",
+  "plugin_version": "1.0.0",
+  "plugin_file_name": "wordpress-plugin-boilerplate.php",
+  "author_name": "Prappo",
+  "author_uri": "https://prappo.github.io",
+  "text_domain": "wordpress-plugin-boilerplate",
+  "domain_path": "/languages",
+  "main_class_name": "WordPressPluginBoilerplate",
+  "main_function_name": "wordpress_plugin_boilerplate_init",
+  "namespace": "WordPressPluginBoilerplate",
+  "plugin_prefix": "wpb",
+  "constant_prefix": "WPB"
 }
 ```
 
@@ -66,13 +72,14 @@ Then run the following command to rename the plugin
 ```bash
 npm run rename
 ```
+
 ## Add Shadcn UI
 
 ```bash
 npx shadcn@latest add accordion
 ```
-It will install the component in `src/components` folder.
 
+It will install the component in `src/components` folder.
 
 ## Structure
 
@@ -165,7 +172,9 @@ Route::prefix( $prefix, function( Route $route ) {
     $route->post( $endpoint, $callback, $auth = false );
 });
 ```
+
 #### API Example
+
 ```php
 // Get All posts
 $route->get( '/posts/get', '\WordPressPluginBoilerplate\Controllers\Posts\Actions@get_all_posts' );
@@ -256,11 +265,11 @@ For example: For admin:
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/includes/Assets/Frontend.php#L104-L110
 
-And access data on react like this 
+And access data on react like this
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/src/frontend/components/application-layout/LayoutOne.jsx#L58
 
-Remember the object `wordpressPluginBoilerplateFrontend` name can be defined here 
+Remember the object `wordpressPluginBoilerplateFrontend` name can be defined here
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/includes/Assets/Frontend.php#L30
 
@@ -272,7 +281,7 @@ You can create a shortcode by using the `Shortcode` class.
 
 /**
  * Example Usage
- * 
+ *
  * Registering a shortcode that renders a PHP view file
  */
 Shortcode::add()
@@ -320,6 +329,7 @@ Some highlighted content.
 ```bash
 npm run dev
 ```
+
 If you want to run only frontend or admin you can use the following commands:
 
 ```bash
@@ -338,6 +348,7 @@ npm run dev:server
 ```bash
 npm run build
 ```
+
 ## Start block
 
 ```bash
@@ -365,4 +376,3 @@ If you are facing any issue with the development server, you can try the followi
 1. If you are using Local WP you might see dev server is not working because of SSL certificate issue or domain mismatch.You can fix this by chaning your `Router mode` to `localhost`.
 
 2. Sometimes you might see on the first run of `npm run dev` you might see nothing is happening. You can try to run `npm run dev` again.
-
